@@ -9,7 +9,7 @@ class RoomController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * http://localhost/8000/api/rooms/retrieve
+     * http://localhost/8000/api/rooms/
      */
 
      public function index(){
@@ -22,7 +22,7 @@ class RoomController extends Controller
 
      /**
       * Create a New Room
-      * http://localhost/8000/api/rooms/create
+      * http://localhost/8000/api/rooms/
       */
 
       public function create(Request $request){
@@ -54,7 +54,7 @@ class RoomController extends Controller
 
       /**
        * Display the specified resource.
-       * http://localhost/8000/api/rooms/show/{id}
+       * http://localhost/8000/api/rooms/{id}
        */
 
        public function show($id){
@@ -69,7 +69,7 @@ class RoomController extends Controller
 
        /**
         * Update the specified resource in storage.
-        * http://localhost/8000/api/rooms/update/{id}
+        * http://localhost/8000/api/rooms/{id}
         */
 
         public function update(Request $request, $id){
@@ -107,7 +107,7 @@ class RoomController extends Controller
 
         /**
          * Delete the specified resource from storage.
-         * http://localhost/8000/api/rooms/delete/{id}
+         * http://localhost/8000/api/rooms/{id}
          */
 
          public function destroy($id){
@@ -122,7 +122,7 @@ class RoomController extends Controller
 
          /**
           * Search Room
-          * http://localhost/8000/api/rooms/search
+          * http://localhost/8000/api/rooms/
           */
 
           public function search(Request $request){

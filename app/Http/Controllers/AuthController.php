@@ -126,6 +126,6 @@ class AuthController extends Controller
                 'ok' => true,
                 'message' => 'Search Success',
                 'data' => $users
-            ],200);
+            ]);
     }
 }

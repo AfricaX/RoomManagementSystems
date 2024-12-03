@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Room;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * http://localhost:8000/api/bookings/retrieve
+     * http://localhost:8000/api/bookings/
      */
 
      public function index(){
@@ -23,10 +24,13 @@ class BookingController extends Controller
 
      /**
       * Store a newly created resource in storage.
-      * http://localhost:8000/api/bookings/store
+      * http://localhost:8000/api/bookings/
       */
 
       public function store(Request $request){
+
+        $user = Auth::user();
+
         $validator = validator($request->all(), [
             'user_id' => 'required | exists:users,id',
             'room_id' => 'required | exists:rooms,id',
@@ -38,27 +42,51 @@ class BookingController extends Controller
             'book_until' => 'required | date'
         ]);
 
-        if($validator->fails()){
-            return response()->json([
-                'ok' => false,
-                'message' => 'Booking Creation Failed',
-                'errors' => $validator->errors()
-            ], 400);
-        }
+        if ($user->role == 'admin') {
 
-        $rooms = Room::find($validator->validated()['room_id']);
-        $bookings = Booking::create($validator->validated());
-        return response()->json([
-            'ok' => true,
-            'message' => 'Booking Created Successfully',
-            'room' => $rooms,
-            'data' => $bookings
-        ], 200);
-      }
+            if($validator->fails()){
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'Booking Creation Failed',
+                    'errors' => $validator->errors()
+                ], 400);
+            }
+    
+            $bookings = Booking::create($validator->validated());
+            
+    
+            return response()->json([
+                'ok' => true,
+                'message' => 'Booking Created Successfully',
+                'data' => $bookings
+            ], 200);
+          }
+
+        if ($user->role !== 'admin') {
+            
+            $bookrequest = Booking::create([
+                'user_id' => $request->user_id,
+                'room_id' => $request->room_id,
+                'subject' => $request->subject,
+                'start_time' => $request->start_time,
+                'end_time' => $request->end_time,
+                'day_of_week' => $request->day_of_week,
+                'status' => "pending",
+                'book_until' => $request->book_until
+            ]);
+
+            return response()->json([
+                'ok' => true,
+                'message' => 'Booking Created Successfully, Please wait for approval',
+                'data' => $bookrequest
+            ]);
+        }
+    }
+       
 
       /**
        * display the specified resource.
-       * http://localhost:8000/api/bookings/show/{id}
+       * http://localhost:8000/api/bookings/{id}
        */
 
        public function show($id){
@@ -71,10 +99,20 @@ class BookingController extends Controller
 
        /**
         * update the specified resource in storage.
-        * http://localhost:8000/api/bookings/update/{id}
+        * http://localhost:8000/api/bookings/{id}
         */
 
         public function update(Request $request, $id){
+
+            $user = Auth::user();
+
+            if ($user->role !== 'admin') {
+                return response()->json([
+                    'ok' => false,
+                    'message' => 'You are not authorized to update this booking, Please contact System Administrator',
+                ], 400);
+            }
+
             $validator = validator($request->all(), [
                 'user_id' => 'required | exists:users,id',
                 'room_id' => 'required | exists:rooms,id',
@@ -105,7 +143,7 @@ class BookingController extends Controller
 
         /**
          * remove the specified resource from storage.
-         * http://localhost:8000/api/bookings/destroy/{id}
+         * http://localhost:8000/api/bookings/{id}
          */
 
          public function destroy($id){

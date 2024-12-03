@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\RoomTypeController;
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
@@ -27,4 +28,11 @@ Route::prefix('/bookings')->middleware(['auth:api'])->group(function(){
     Route::post('/',[BookingController::class,'store']);
     Route::patch('/{id}',[BookingController::class,'update']);
     Route::delete('/{id}',[BookingController::class,'destroy']);
+});
+
+Route::prefix('/roomTypes')->middleware(['auth:api'])->group(function(){
+    Route::get('/',[RoomTypeController::class,'index']);
+    Route::post('/',[RoomTypeController::class,'create']);
+    Route::patch('/{id}',[RoomTypeController::class,'update']);
+    Route::delete('/{id}',[RoomTypeController::class,'destroy']);
 });

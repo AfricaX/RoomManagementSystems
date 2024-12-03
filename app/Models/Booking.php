@@ -21,4 +21,16 @@ class Booking extends Model
          'status', 
          'book_until'
     ];
+
+    public function users(){
+        return $this->belongsTo(User::class);
+    }
+
+    public function rooms(){
+        return $this->belongsTo(Room::class);
+    }
+
+    public function roomtypes(){
+        return $this->belongsTo(Room_type::class);
+    }
 }
