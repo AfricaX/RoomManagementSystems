@@ -121,5 +121,11 @@ class AuthController extends Controller
             }  
 
             $users = User::where('name', 'like', '%'.$validator->validated()['search'].'%')->get();
+
+            return response()->json([
+                'ok' => true,
+                'message' => 'Search Success',
+                'data' => $users
+            ],200);
     }
 }

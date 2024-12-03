@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->string('subject');
-            $table->date('start_time');
-            $table->date('end_time');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->string('day_of_week');
             $table->string('status');
             $table->string('book_until');

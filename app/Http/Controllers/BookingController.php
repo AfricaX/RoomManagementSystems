@@ -30,8 +30,8 @@ class BookingController extends Controller
             'user_id' => 'required | exists:users,id',
             'room_id' => 'required | exists:rooms,id',
             'subject' => 'required | max:30',
-            'start_time' => 'required | date',
-            'end_time' => 'required | date',
+            'start_time' => 'required | time',
+            'end_time' => 'required | time',
             'day_of_week' => 'required | max:10',
             'status' => 'required | max:10',
             'book_until' => 'required | date'
@@ -76,8 +76,8 @@ class BookingController extends Controller
                 'user_id' => 'required | exists:users,id',
                 'room_id' => 'required | exists:rooms,id',
                 'subject' => 'required | max:30',
-                'start_time' => 'required | date',
-                'end_time' => 'required | date',
+                'start_time' => 'required | time',
+                'end_time' => 'required | time',
                 'day_of_week' => 'required | max:10',
                 'status' => 'required | max:10',
                 'book_until' => 'required | date'
