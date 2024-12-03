@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\Room;
 
 class BookingController extends Controller
 {
@@ -30,8 +31,8 @@ class BookingController extends Controller
             'user_id' => 'required | exists:users,id',
             'room_id' => 'required | exists:rooms,id',
             'subject' => 'required | max:30',
-            'start_time' => 'required | time',
-            'end_time' => 'required | time',
+            'start_time' => 'required | date_format:H:i',
+            'end_time' => 'required | date_format:H:i',
             'day_of_week' => 'required | max:10',
             'status' => 'required | max:10',
             'book_until' => 'required | date'
@@ -45,10 +46,12 @@ class BookingController extends Controller
             ], 400);
         }
 
+        $rooms = Room::find($validator->validated()['room_id']);
         $bookings = Booking::create($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Booking Created Successfully',
+            'room' => $rooms,
             'data' => $bookings
         ], 200);
       }

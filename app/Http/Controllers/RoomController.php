@@ -58,10 +58,12 @@ class RoomController extends Controller
        */
 
        public function show($id){
+            $room = Room::find($id);
+            $room->bookings;
         return response()->json([
             'ok' => true,
             'message' => 'Retrieved Successfully',
-            'data' => Room::find($id)
+            'data' => $room
         ], 200);
        }
 
