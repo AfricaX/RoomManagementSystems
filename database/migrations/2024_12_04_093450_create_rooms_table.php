@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             // $table->foreign('booking_id')-references('id')->on('bookings')->onDelete('cascade');
             $table->string('room_name');
-            $table->string('room_type');
+            $table->unsignedBigInteger('room_type_id');
+            $table->foreign('room_type_id')->references('id')->on('room_types')->onDelete('cascade');
             $table->string('location');
             $table->string('description');
             $table->integer('capacity');

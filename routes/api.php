@@ -6,12 +6,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\RoomTypeController;
+use App\Http\Controllers\UserController;
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
 Route::middleware('auth:api')->get('/checkToken',[AuthController::class,'checktoken']);
 Route::middleware('auth:api')->post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:api')->post('/search', [AuthController::class, 'search']);
+Route::middleware('auth:api')->get('/users', [UserController::class, 'index']);
 
 Route::prefix('/rooms')->middleware(['auth:api'])->group(function(){
     Route::get('/',[RoomController::class,'index']);

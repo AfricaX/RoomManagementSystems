@@ -35,18 +35,7 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ]);
 
-        /**
-         * Seed Rooms
-         */
-
-            Room::create([
-                'room_name' => '101',
-                'room_type' => 'Lecture Room',
-                'location' => 'Main Building',
-                'description' => 'Lecture Room',
-                'capacity' => '50',
-            ]);
-
+       
 
         /**
          * Seed Room Types
@@ -70,5 +59,18 @@ class DatabaseSeeder extends Seeder
             RoomType::create([
                 'room_type' => 'Registrar Office',
             ]);
+
+        /**
+         * Seed Rooms
+         */
+
+            Room::create([
+                'room_name' => '101',
+                'room_type_id' => '1',
+                'location' => 'Main Building',
+                'description' => 'Lecture Room',
+                'capacity' => '50',
+            ]);
+
     }
 }

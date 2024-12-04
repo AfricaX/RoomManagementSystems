@@ -39,6 +39,7 @@ class BookingController extends Controller
             'end_time' => 'required | date_format:H:i',
             'day_of_week' => 'required | max:10',
             'status' => 'required | max:10',
+            'book_start' => 'required | date',
             'book_until' => 'required | date'
         ]);
 
@@ -72,6 +73,7 @@ class BookingController extends Controller
                 'end_time' => $request->end_time,
                 'day_of_week' => $request->day_of_week,
                 'status' => "pending",
+                'book_start' => $request->book_start,
                 'book_until' => $request->book_until
             ]);
 
@@ -121,6 +123,7 @@ class BookingController extends Controller
                 'end_time' => 'required | time',
                 'day_of_week' => 'required | max:10',
                 'status' => 'required | max:10',
+                'book_start' => 'required | date',
                 'book_until' => 'required | date'
             ]);
 
