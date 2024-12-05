@@ -120,31 +120,5 @@ class RoomController extends Controller
             ], 200);
          }
 
-         /**
-          * Search Room
-          * http://localhost/8000/api/rooms/
-          */
-
-          public function search(Request $request){
-            $validator = validator($request->all(), [
-                'search' => 'required'
-            ]);
-
-           
-            if($validator->fails()){
-                return response()->json([
-                    'ok' => false,
-                    'message' => 'Search Failed',
-                    'errors' => $validator->errors()
-                ], 400);
-            }  
-
-            $rooms = Room::where('room_name', 'like', '%'.$validator->validated()['search'].'%')->get();
-
-            return response()->json([
-                'ok' => true,
-                'message' => 'Search Success',
-                'data' => $rooms
-            ],200);
-        }
+       
 }

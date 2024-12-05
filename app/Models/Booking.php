@@ -34,4 +34,12 @@ class Booking extends Model
     public function roomtypes(){
         return $this->belongsTo(Room_type::class);
     }
+
+    public function subjects(){
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function sections(){
+        return $this->belongsTo(Section::class);
+    }
 }

@@ -48,7 +48,7 @@ class RoomTypeController extends Controller
 
     /**
      * Update room type
-     *http://localhost:8000/api/room_types/
+     *http://localhost:8000/api/room_types/{id}
      */
 
      public function update(Request $request, $id){
