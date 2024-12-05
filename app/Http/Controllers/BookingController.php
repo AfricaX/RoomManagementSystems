@@ -34,12 +34,13 @@ class BookingController extends Controller
         $validator = validator($request->all(), [
             'user_id' => 'required | exists:users,id',
             'room_id' => 'required | exists:rooms,id',
-            'subject' => 'required | max:30',
+            'subject_id' => 'required | max:30',
+            'section_id' => 'required | exists:sections,id',
             'start_time' => 'required | date_format:H:i',
             'end_time' => 'required | date_format:H:i',
             'day_of_week' => 'required | max:10',
             'status' => 'required | max:10',
-            'book_start' => 'required | date',
+            'book_from' => 'required | date',
             'book_until' => 'required | date'
         ]);
 
@@ -68,12 +69,13 @@ class BookingController extends Controller
             $bookrequest = Booking::create([
                 'user_id' => $request->user_id,
                 'room_id' => $request->room_id,
-                'subject' => $request->subject,
+                'subject_id' => $request->subject,
+                'section_id' => $request->section_id,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
                 'day_of_week' => $request->day_of_week,
                 'status' => "pending",
-                'book_start' => $request->book_start,
+                'book_from' => $request->book_start,
                 'book_until' => $request->book_until
             ]);
 
@@ -118,12 +120,13 @@ class BookingController extends Controller
             $validator = validator($request->all(), [
                 'user_id' => 'required | exists:users,id',
                 'room_id' => 'required | exists:rooms,id',
-                'subject' => 'required | max:30',
+                'subject_id' => 'required | max:30',
+                'section_id' => 'required | exists:sections,id',
                 'start_time' => 'required | time',
                 'end_time' => 'required | time',
                 'day_of_week' => 'required | max:10',
                 'status' => 'required | max:10',
-                'book_start' => 'required | date',
+                'book_from' => 'required | date',
                 'book_until' => 'required | date'
             ]);
 

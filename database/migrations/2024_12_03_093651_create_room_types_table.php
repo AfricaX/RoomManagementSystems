@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('room_types', function (Blueprint $table) {
             $table->id();
-            $table->string('room_type')->unique();
+            $table->string('room_type');
             $table->timestamps();
             
         });

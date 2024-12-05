@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('room_id');
-            $table->unsignedBigInteger('subject');
-            $table->unsignedBigInteger('section');
+            $table->unsignedBigInteger('subject_id');
+            $table->unsignedBigInteger('section_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
-            $table->foreign('subject')->references('id')->on('subjects')->onDelete('cascade');
-            $table->foreign('section')->references('id')->on('sections')->onDelete('cascade');
+            $table->foreign('subject_id')->references('id')->on('subjects')->onDelete('cascade');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
             $table->time('start_time');
             $table->time('end_time');
             $table->string('day_of_week');

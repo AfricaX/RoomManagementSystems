@@ -14,12 +14,13 @@ class Booking extends Model
      protected $fillable = [
         'user_id', 
         'room_id', 
-        'subject', 
+        'subject_id', 
+        'section_id',
         'start_time', 
         'end_time', 
         'day_of_week',
          'status', 
-         'book_start',
+         'book_from',
          'book_until'
     ];
 
