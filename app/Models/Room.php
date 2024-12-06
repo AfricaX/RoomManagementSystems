@@ -18,6 +18,9 @@ class room extends Model
         'image',
     ];
 
+    public function getImageAttribute($value){
+        return $value ? url('storage/'.$value) : null;
+    }
     public function users(){
     return $this->belongsTo(User::class);
     }
