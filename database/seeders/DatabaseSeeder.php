@@ -44,7 +44,19 @@ class DatabaseSeeder extends Seeder
         RoomType::create([
             "room_type" => "Library"
         ]);
+        Section::create([
+            "section_name" => "1e2",
+            "section_type" => "DTS"
+        ]);
+        Section::create([
+            "section_name" => "1e1",
+            "section_type" => "DTS"
+        ]);
 
+        Section::create([
+            "section_name" => "stem",
+            "section_type" => "Senior High"
+        ]);
         Artisan::call('passport:keys');
         Artisan::call('passport:client --personal --no-interaction');
 
