@@ -76,7 +76,7 @@ class RoomController extends Controller
             $validator = validator($request->all(), [
                 // 'booking_id' => 'required | exists:bookings,id',
                 'room_name' => 'required | max:30',
-                'room_type_id' => 'required | exists:room_type,id',
+                'room_type_id' => 'required | exists:room_types,id',
                 'location' => 'required | max:30',
                 'description' => 'required | max:255',
                 'capacity' => 'required | numeric | max:100',
