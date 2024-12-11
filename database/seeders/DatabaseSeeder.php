@@ -29,6 +29,21 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'admin'
         ]);
+        RoomType::create([
+            "room_type" => "Laboratory"
+        ]);
+        RoomType::create([
+            "room_type" => "Classroom"
+        ]);
+        RoomType::create([
+            "room_type" => "Auditorium"
+        ]);
+        RoomType::create([
+            "room_type" => "Conference Room"
+        ]);
+        RoomType::create([
+            "room_type" => "Library"
+        ]);
 
         Artisan::call('passport:keys');
         Artisan::call('passport:client --personal --no-interaction');
