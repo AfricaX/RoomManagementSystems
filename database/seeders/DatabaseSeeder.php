@@ -23,7 +23,13 @@ class DatabaseSeeder extends Seeder
         /**
          * Generate passport keys
          */
-        
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'admin'
+        ]);
+
         Artisan::call('passport:keys');
         Artisan::call('passport:client --personal --no-interaction');
 
