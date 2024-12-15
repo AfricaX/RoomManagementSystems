@@ -10,6 +10,8 @@ use Artisan;
 use App\Models\RoomType;
 use App\Models\Room;
 use App\Models\Booking;
+use App\Models\Section;
+use App\Models\Subject;
 
 class DatabaseSeeder extends Seeder
 {

@@ -39,20 +39,20 @@ class SectionController extends Controller
             ], 400);
         }
             
-        $sections = Section::create($validator->validated());
+        $section = Section::create($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Section Created Successfully',
-            'data' => $sections
+            'data' => $section
         ], 200);
       }
 
       /**
        * Update section
-       * http://localhost:8000/api/sections/{id}
+       * http://localhost:8000/api/sections/{section}
        */
 
-       public function update(Request $request, $id){
+       public function update(Request $request, Section $section){
         $validator = validator($request->all(), [
             'section_name' => 'required | max:30',
             'section_type' => 'required | max:30'
@@ -66,40 +66,38 @@ class SectionController extends Controller
             ], 400);
         }
 
-        $sections = Section::find($id);
-        $sections->update($validator->validated());
+        $section->update($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Section Updated Successfully',
-            'data' => $sections
+            'data' => $section
         ], 200);
        }
 
        /**
         * Show specific section
-        * http://localhost:8000/api/sections/{id}
+        * http://localhost:8000/api/sections/{section}
         */
 
-        public function show($id){
+        public function show(Section $section){
            return response()->json([
                'ok' => true,
                'message' => 'Retrieved Successfully',
-               'data' => Section::find($id)
+               'data' => $section
            ], 200);
         }
 
         /**
          * Delete section
-         * http://localhost:8000/api/sections/{id}
+         * http://localhost:8000/api/sections/{section}
          */
 
-         public function destroy($id){
-            $sections = Section::find($id);
-            $sections->delete();
+         public function destroy(Section $section){
+            $section->delete();
             return response()->json([
                 'ok' => true,
                 'message' => 'Section Deleted Successfully',
-                'data' => $sections
+                'data' => $section
             ], 200);
          }
 }

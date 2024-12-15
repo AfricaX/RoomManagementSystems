@@ -38,53 +38,52 @@ class RoomTypeController extends Controller
             ], 400);
         }
     
-        $room_types = RoomType::create($validator->validated());
+        $room_type = RoomType::create($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Room Type Created Successfully',
-            'data' => $room_types
+            'data' => $room_type
         ], 200);
     }
 
     /**
      * Update room type
-     *http://localhost:8000/api/room_types/{id}
+     *http://localhost:8000/api/room_types/{room_type}
      */
 
-     public function update(Request $request, $id){
+    public function update(Request $request, Roomtype $room_type) {
         $validator = validator($request->all(), [
-            'room_type' => 'required | max:30',
+            'room_type' => 'required|max:30',
         ]);
-    
-        if($validator->fails()){
+
+        if ($validator->fails()) {
             return response()->json([
                 'ok' => false,
                 'message' => 'Room Type Update Failed',
                 'errors' => $validator->errors()
             ], 400);
         }
-    
-        $room_types = RoomType::find($id);
-        $room_types->update($validator->validated());
+
+        $room_type->update($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Room Type Updated Successfully',
-            'data' => $room_types
+            'data' => $room_type
         ], 200);
     }
+
 
     /**
      * Delete room type
      * http://localhost:8000/api/room_types
      */
 
-     public function destroy($id){
-        $room_types = RoomType::find($id);
-        $room_types->delete();
+     public function destroy(Roomtype $room_type){
+        $room_type->delete();
         return response()->json([
             'ok' => true,
             'message' => 'Room Type Deleted Successfully',
-            'data' => $room_types
+            'data' => $room_type
         ], 200);
      }
 }

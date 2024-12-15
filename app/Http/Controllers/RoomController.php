@@ -27,7 +27,6 @@ class RoomController extends Controller
 
       public function create(Request $request){
         $validator = validator($request->all(), [
-            // 'booking_id' => 'required | exists:bookings,id',
             'room_name' => 'required | max:30',
             'room_type_id' => 'required | exists:room_types,id',
             'location' => 'required | max:30',
@@ -54,27 +53,25 @@ class RoomController extends Controller
 
       /**
        * Display the specified resource.
-       * http://localhost/8000/api/rooms/{id}
+       * http://localhost/8000/api/rooms/{room}
        */
 
-       public function show($id){
-            $room = Room::find($id);
+       public function show(Room $room){
             $room->bookings;
-        return response()->json([
-            'ok' => true,
-            'message' => 'Retrieved Successfully',
-            'data' => $room
-        ], 200);
+            return response()->json([
+                'ok' => true,
+                'message' => 'Retrieved Successfully',
+                'data' => $room
+            ], 200);
        }
 
        /**
         * Update the specified resource in storage.
-        * http://localhost/8000/api/rooms/{id}
+        * http://localhost/8000/api/rooms/{room}
         */
 
-        public function update(Request $request, $id){
+        public function update(Request $request, Room $room){
             $validator = validator($request->all(), [
-                // 'booking_id' => 'required | exists:bookings,id',
                 'room_name' => 'required | max:30',
                 'room_type_id' => 'required | exists:room_types,id',
                 'location' => 'required | max:30',
@@ -95,28 +92,26 @@ class RoomController extends Controller
                     'errors' => $validator->errors()
                 ], 400);
             }
-
-            $rooms = Room::find($id);
-            $rooms->update($validator->validated());
+;
+            $room->update($validator->validated());
             return response()->json([
                 'ok' => true,
                 'message' => 'Room Updated Successfully',
-                'data' => $rooms
+                'data' => $room
             ], 200);
         }
 
         /**
          * Delete the specified resource from storage.
-         * http://localhost/8000/api/rooms/{id}
+         * http://localhost/8000/api/rooms/{room}
          */
 
-         public function destroy($id){
-            $rooms = Room::find($id);
-            $rooms->delete();
+         public function destroy(Room $room){
+            $room->delete();
             return response()->json([
                 'ok' => true,
                 'message' => 'Room Deleted Successfully',
-                'data' => $rooms
+                'data' => $room
             ], 200);
          }
 
