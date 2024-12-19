@@ -30,7 +30,6 @@ Route::prefix('/rooms')->middleware(['auth:api'])->group(function(){
 // http://localhost:8000/api/bookings/
 Route::prefix('/bookings')->middleware(['auth:api'])->group(function(){        
     Route::get('/',[BookingController::class,'index']);
-    Route::get('/{booking}',[BookingController::class,'show']);
     Route::post('/',[BookingController::class,'store']);
     Route::patch('/{booking}',[BookingController::class,'update']);
     Route::delete('/{booking}',[BookingController::class,'destroy']);

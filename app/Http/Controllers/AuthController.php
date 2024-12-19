@@ -70,7 +70,7 @@ class AuthController extends Controller
 
         return response()->json([
             'ok' => false,
-            'message' => 'Login Failed',     
+            'message' => 'Email or Password is Invalid',     
             'errors' => 'Invalid Credentials'       
         ], 401);
 
