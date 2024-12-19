@@ -24,23 +24,30 @@ class Booking extends Model
          'book_until'
     ];
 
-    public function users(){
-        return $this->belongsTo(User::class);
-    }
+public function users()
+{
+    return $this->belongsTo(User::class, 'user_id', 'id');
+}
 
-    public function rooms(){
-        return $this->belongsTo(Room::class);
-    }
+public function rooms()
+{
+    return $this->belongsTo(Room::class, 'room_id', 'id');
+}
 
-    public function roomtypes(){
-        return $this->belongsTo(Room_type::class);
-    }
+public function roomtypes()
+{
+    return $this->belongsTo(RoomType::class, 'roomtype_id', 'id'); 
+}
 
-    public function subjects(){
-        return $this->belongsTo(Subject::class);
-    }
+public function subjects()
+{
+    return $this->belongsTo(Subject::class, 'subject_id', 'id');
+}
 
-    public function sections(){
-        return $this->belongsTo(Section::class);
-    }
+public function sections()
+{
+    return $this->belongsTo(Section::class, 'section_id', 'id');
+}
+
+
 }

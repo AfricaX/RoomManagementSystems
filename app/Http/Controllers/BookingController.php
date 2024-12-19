@@ -13,12 +13,16 @@ class BookingController extends Controller
      * Display a listing of the resource.
      * http://localhost:8000/api/bookings/
      */
-    public function index() {
+     public function index()
+    {
+        // Fetch all bookings with their related models
+        $bookings = Booking::with(['users', 'rooms', 'roomtypes', 'subjects', 'sections'])->get();
+
         return response()->json([
+            'success' => true,
+            'data' => $bookings,
             'ok' => true,
-            'message' => 'Retrieved Successfully',
-            'data' => Booking::all()
-        ], 200);
+        ]);
     }
 
     /**
