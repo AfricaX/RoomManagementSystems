@@ -39,20 +39,20 @@ class SubjectController extends Controller
             ],400);
         }
 
-        $subjects = Subject::create($validator->validated());
+        $subject = Subject::create($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Subject Created Successfully',
-            'data' => $subjects
+            'data' => $subject
         ], 200);
       }
 
       /**
        * Update a subject
-       * http://localhost:8000/api/subjects/{id}
+       * http://localhost:8000/api/subjects/{subject}
       */
 
-      public function update(Request $request, $id){
+      public function update(Request $request, Subject $subject){
         $validator = validator($request->all(), [
             'subject_name' => 'required | max:30',
             'subject_type' => 'required | max:30'
@@ -66,27 +66,25 @@ class SubjectController extends Controller
             ], 400);
         }
 
-        $subjects = Subject::find($id);
-        $subjects->update($validator->validated());
+        $subject->update($validator->validated());
         return response()->json([
             'ok' => true,
             'message' => 'Subject Updated Successfully',
-            'data' => $subjects
+            'data' => $subject
         ], 200);
       }
 
       /**
        * Delete a subject
-       * http://localhost:8000/api/subjects/{id}
+       * http://localhost:8000/api/subjects/{subject}
        */
 
-       public function destroy($id){
-        $subjects = Subject::find($id);
-        $subjects->delete();
+       public function destroy(Subject $subject){
+        $subject->delete();
         return response()->json([
             'ok' => true,
             'message' => 'Subject Deleted Successfully',
-            'data' => $subjects
+            'data' => $subject
         ], 200);
        }
 }

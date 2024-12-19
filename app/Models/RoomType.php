@@ -8,6 +8,7 @@ class RoomType extends Model
 {
     //
 
+    protected $table = 'room_types';
     protected $fillable = [
         'room_type',
     ];

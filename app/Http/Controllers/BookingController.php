@@ -13,152 +13,179 @@ class BookingController extends Controller
      * Display a listing of the resource.
      * http://localhost:8000/api/bookings/
      */
-
-     public function index(){
+    public function index() {
         return response()->json([
             'ok' => true,
             'message' => 'Retrieved Successfully',
             'data' => Booking::all()
         ], 200);
-     }
+    }
 
-     /**
-      * Store a newly created resource in storage.
-      * http://localhost:8000/api/bookings/
-      */
-
-      public function store(Request $request){
-
+    /**
+     * Store a newly created resource in storage.
+     * http://localhost:8000/api/bookings/
+     */
+    public function store(Request $request) {
         $user = Auth::user();
+        
+        $today = now()->format('Y-m-d');
 
         $validator = validator($request->all(), [
-            'user_id' => 'required | exists:users,id',
-            'room_id' => 'required | exists:rooms,id',
-            'subject_id' => 'required | max:30',
-            'section_id' => 'required | exists:sections,id',
-            'start_time' => 'required | date_format:H:i',
-            'end_time' => 'required | date_format:H:i',
-            'day_of_week' => 'required | max:10',
-            'status' => 'required | max:10',
-            'book_from' => 'required | date',
-            'book_until' => 'required | date'
+            'user_id' => 'required|exists:users,id',
+            'room_id' => 'required|exists:rooms,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'section_id' => 'required|exists:sections,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'day_of_week' => 'required|array|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', 
+            'day_of_week.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', 
+            'book_from' => 'required|date|after_or_equal:' . $today, 
+            'book_until' => 'required|date|after_or_equal:book_from', 
         ]);
 
-        if ($user->role == 'admin') {
+        if ($validator->fails()) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Booking Creation Failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
 
-            if($validator->fails()){
+        $bookings = [];
+        foreach ($request->day_of_week as $day) {
+            // Step 1: Check if there are any existing bookings for the same room and day
+            $existingBookings = Booking::where('room_id', $request->room_id)
+                ->where('day_of_week', $day)
+                ->whereBetween('book_from', [$request->book_from, $request->book_until])
+                ->whereBetween('book_until', [$request->book_from, $request->book_until]);
+
+            // Step 2: Check if the start_time and end_time overlap with existing bookings
+            $overlap = $existingBookings->where(function ($query) use ($request) {
+                // Check if the new booking's start_time overlaps with any existing booking's time
+                $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                      ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
+                      ->orWhere(function ($query) use ($request) {
+                          // Check if the new booking is fully contained within an existing booking's time 
+                          $query->where('start_time', '<=', $request->start_time)
+                                ->where('end_time', '>=', $request->end_time);
+                      });
+            })->exists();
+
+            // Step 3: If there's an overlap cancel the booking
+            if ($overlap) {
                 return response()->json([
                     'ok' => false,
-                    'message' => 'Booking Creation Failed',
-                    'errors' => $validator->errors()
+                    'message' => 'Room has already been booked for the selected time range.',
                 ], 400);
             }
-    
-            $bookings = Booking::create($validator->validated());
-            
-    
-            return response()->json([
-                'ok' => true,
-                'message' => 'Booking Created Successfully',
-                'data' => $bookings
-            ], 200);
-          }
 
-        if ($user->role !== 'admin') {
-            
-            $bookrequest = Booking::create([
+            // Step 4: Create the booking if no overlap is found
+            $booking = Booking::create([
                 'user_id' => $request->user_id,
                 'room_id' => $request->room_id,
-                'subject_id' => $request->subject,
+                'subject_id' => $request->subject_id,
                 'section_id' => $request->section_id,
                 'start_time' => $request->start_time,
                 'end_time' => $request->end_time,
-                'day_of_week' => $request->day_of_week,
-                'status' => "pending",
-                'book_from' => $request->book_start,
+                'day_of_week' => $day, 
+                'status' => $user->role == 'admin' ? 'approved' : 'pending',
+                'book_from' => $request->book_from,
                 'book_until' => $request->book_until
             ]);
-
-            return response()->json([
-                'ok' => true,
-                'message' => 'Booking Created Successfully, Please wait for approval',
-                'data' => $bookrequest
-            ]);
+            $bookings[] = $booking;
         }
-    }
-       
 
-      /**
-       * display the specified resource.
-       * http://localhost:8000/api/bookings/{id}
-       */
-
-       public function show($id){
         return response()->json([
             'ok' => true,
-            'message' => 'Retrieved Successfully',
-            'data' => Booking::find($id)
+            'message' => $user->role == 'admin' 
+                ? 'Booking Created Successfully' 
+                : 'Booking Created Successfully, Please wait for admin approval',
+            'data' => $bookings
         ], 200);
-       }
+    }
 
-       /**
-        * update the specified resource in storage.
-        * http://localhost:8000/api/bookings/{id}
-        */
-
-        public function update(Request $request, $id){
-
-            $user = Auth::user();
-
-            if ($user->role !== 'admin') {
-                return response()->json([
-                    'ok' => false,
-                    'message' => 'You are not authorized to update this booking, Please contact System Administrator',
-                ], 400);
-            }
-
-            $validator = validator($request->all(), [
-                'user_id' => 'required | exists:users,id',
-                'room_id' => 'required | exists:rooms,id',
-                'subject_id' => 'required | max:30',
-                'section_id' => 'required | exists:sections,id',
-                'start_time' => 'required  ',
-                'end_time' => 'required  ',
-                'day_of_week' => 'required | max:10',
-                'status' => 'required | max:10',
-                'book_from' => 'required | date',
-                'book_until' => 'required | date'
-            ]);
-
-            if($validator->fails()){
-                return response()->json([
-                    'ok' => false,
-                    'message' => 'Booking Update Failed',
-                    'errors' => $validator->errors()
-                ], 400);
-            };
-
-            $bookings = Booking::find($id);
-            $bookings->update($validator->validated());
+    /**
+     * Update the specified resource in storage.
+     * http://localhost:8000/api/bookings/{booking}
+     */
+    public function update(Request $request, Booking $booking) {
+        $user = Auth::user();
+        if($user->role != 'admin') {
             return response()->json([
-                'ok' => true,
-                'message' => 'Booking Updated Successfully',
-                'data' => $bookings
-            ], 200);
+                'ok' => false,
+                'message' => 'Access Denied',
+            ], 403);
         }
 
-        /**
-         * remove the specified resource from storage.
-         * http://localhost:8000/api/bookings/{id}
-         */
+        $today = now()->format('Y-m-d');
 
-         public function destroy($id){
-            $bookings = Booking::find($id);
-            $bookings->delete();
+        $validator = validator($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'room_id' => 'required|exists:rooms,id',
+            'subject_id' => 'required|exists:subjects,id',
+            'section_id' => 'required|exists:sections,id',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
+            'day_of_week' => 'required|array|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', 
+            'day_of_week.*' => 'in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', 
+            'book_from' => 'required|date|after_or_equal:' . $today, 
+            'book_until' => 'required|date|after_or_equal:book_from', 
+        ]);
+
+        if ($validator->fails()) {
             return response()->json([
-                'ok' => true,
-                'message' => 'Booking Deleted Successfully',
-                'data' => $bookings
-            ], 200);
-         }
+                'ok' => false,
+                'message' => 'Booking Update Failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        // Check if there are any existing bookings for the same room and day
+        $existingBookings = Booking::where('room_id', $request->room_id)
+            ->where('day_of_week', $request->day_of_week)
+            ->whereBetween('book_from', [$request->book_from, $request->book_until])
+            ->whereBetween('book_until', [$request->book_from, $request->book_until])
+            ->whereNotIn('id', [$booking->id]);
+
+        // Check if the start_time and end_time overlap with existing bookings
+        $overlap = $existingBookings->where(function ($query) use ($request) {
+            // Check if the new booking's start_time overlaps with any existing booking's time
+            $query->whereBetween('start_time', [$request->start_time, $request->end_time])
+                  ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
+                  ->orWhere(function ($query) use ($request) {
+                      // Check if the new booking is fully contained within an existing booking's time 
+                      $query->where('start_time', '<=', $request->start_time)
+                            ->where('end_time', '>=', $request->end_time);
+                  });
+        })->exists();
+
+        // If there's an overlap cancel the booking
+        if ($overlap) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Room has already been booked for the selected time range.',
+            ], 400);
+        }
+
+        $booking->update($validator->validated());
+
+        return response()->json([
+            'ok' => true,
+            'message' => 'Booking Updated Successfully',
+            'data' => $booking
+        ], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * http://localhost:8000/api/bookings/{booking}
+     */
+    public function destroy(Booking $booking) {
+        $booking->delete();
+        return response()->json([
+            'ok' => true,
+            'message' => 'Booking Deleted Successfully',
+            'data' => $booking
+        ], 200);
+    }
 }
